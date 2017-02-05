@@ -28,7 +28,7 @@ async def display_image(app):
                 ),
             )
             pygame.display.flip()
-            await asyncio.sleep(0.5)
+            await asyncio.sleep(0.1)
 
     except asyncio.CancelledError:
         pass
@@ -51,6 +51,27 @@ async def serve_open(request):
     return web.Response()
 
 
+async def process_next(request):
+    global IMAGE
+    PATTERN = [2, 1, 2, 1]  # 'c' in morse
+    PAUSE = 0.3
+    image_open = pygame.image.load('assets/open.png')
+    image_inv = pygame.image.load('assets/open-inv.png')
+
+    IMAGE = image_open
+    await asyncio.sleep(PAUSE)
+    for part in PATTERN:
+        IMAGE = image_inv
+        await asyncio.sleep(part * PAUSE)
+        IMAGE = image_open
+        await asyncio.sleep(PAUSE)
+
+
+async def serve_next(request):
+    asyncio.ensure_future(process_next(request))
+    return web.Response()
+
+
 async def serve_close(request):
     global IMAGE
     IMAGE = pygame.image.load('assets/closed.png')
@@ -68,6 +89,7 @@ def main():
 
     app = web.Application()
     app.router.add_post('/open', serve_open)
+    app.router.add_post('/next', serve_next)
     app.router.add_post('/close', serve_close)
     app.on_startup.append(start_background_tasks)
     app.on_cleanup.append(cleanup_background_tasks)
