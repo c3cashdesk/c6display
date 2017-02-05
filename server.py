@@ -51,6 +51,12 @@ async def serve_open(request):
     return web.Response()
 
 
+async def serve_close(request):
+    global IMAGE
+    IMAGE = pygame.image.load('assets/closed.png')
+    return web.Response()
+
+
 def main():
     global SURFACE
     pygame.init()
@@ -62,6 +68,7 @@ def main():
 
     app = web.Application()
     app.router.add_post('/open', serve_open)
+    app.router.add_post('/close', serve_close)
     app.on_startup.append(start_background_tasks)
     app.on_cleanup.append(cleanup_background_tasks)
 
