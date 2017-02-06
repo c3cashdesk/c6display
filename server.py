@@ -6,6 +6,7 @@ import pygame
 from pygame.locals import QUIT
 
 
+DEBUG = True
 IMAGE = pygame.image.load('assets/closed.png')
 SCREEN_WIDTH = 1920
 SCREEN_HEIGHT = 1080
@@ -83,7 +84,7 @@ def main():
     pygame.init()
     SURFACE = pygame.display.set_mode(
         (SCREEN_WIDTH, SCREEN_HEIGHT),  # resolution=,
-        not pygame.FULLSCREEN,  # flags=
+        not pygame.FULLSCREEN if DEBUG else pygame.FULLSCREEN,  # flags=
         8,  # depth=
     )
 
